@@ -1,129 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>🕵️ Case Files</title>
+<meta charset="UTF-8">
+<title>SVU Case Files</title>
 
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      min-height: 100vh;
-      background: linear-gradient(135deg, #0f172a, #1e293b);
-      color: #e5e7eb;
-      font-family: "Arial Rounded MT Bold", Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+<style>
+body {
+  margin: 0;
+  background: #0f172a;
+  color: #e5e7eb;
+  font-family: Arial, sans-serif;
+}
 
-    .app {
-      background: rgba(255, 255, 255, 0.08);
-      padding: 30px;
-      border-radius: 22px;
-      width: 90%;
-      max-width: 420px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-    }
+.app {
+  padding: 20px;
+}
 
-    h1 {
-      text-align: center;
-      margin-bottom: 8px;
-    }
+h1 {
+  text-align: center;
+}
 
-    .subtitle {
-      text-align: center;
-      font-size: 14px;
-      opacity: 0.85;
-      margin-bottom: 20px;
-    }
+.scene {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
 
-    button {
-      width: 100%;
-      padding: 14px;
-      margin-top: 10px;
-      border: none;
-      border-radius: 16px;
-      font-size: 15px;
-      cursor: pointer;
-      background: #6366f1;
-      color: white;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.35);
-      transition: all 0.2s ease;
-    }
+.character {
+  text-align: center;
+  cursor: pointer;
+}
 
-    button:hover {
-      background: #818cf8;
-      transform: translateY(-2px);
-    }
+.character img {
+  width: 120px;
+  border-radius: 12px;
+  border: 2px solid #6366f1;
+}
 
-    #log {
-      margin-top: 18px;
-      padding: 16px;
-      border-radius: 16px;
-      background: rgba(0,0,0,0.35);
-      font-size: 15px;
-      min-height: 90px;
-      white-space: pre-line;
-    }
-  </style>
+.character p {
+  margin-top: 6px;
+}
+
+#chat {
+  margin-top: 20px;
+  background: rgba(255,255,255,0.08);
+  padding: 15px;
+  border-radius: 14px;
+  min-height: 80px;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 10px;
+  border: none;
+  font-size: 15px;
+}
+
+button {
+  margin-top: 10px;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  background: #6366f1;
+  color: white;
+  font-size: 15px;
+}
+
+.computer {
+  margin-top: 25px;
+  padding: 15px;
+  background: rgba(0,0,0,0.4);
+  border-radius: 14px;
+}
+</style>
 </head>
 
 <body>
-  <div class="app">
-    <h1>🕵️ Case Files</h1>
-    <div class="subtitle">Welcome back, Detective.</div>
+<div class="app">
+  <h1>🕵️ SVU Case Files</h1>
 
-    <button onclick="newCase()">📁 Generate New Case</button>
-    <button onclick="talkBenson()">👩‍✈️ Talk to Benson</button>
-    <button onclick="talkStabler()">👨‍✈️ Talk to Stabler</button>
-    <button onclick="groupChat()">👥 Group Chat</button>
+  <!-- CHARACTERS -->
+  <div class="scene">
+    <div class="character" onclick="setDetective('benson')">
+      <img src="https://i.imgur.com/4AiXzf8.png">
+      <p>Benson</p>
+    </div>
 
-    <div id="log">Tap a button to begin…</div>
-  </div>
+    <div class="character" onclick="setDetective('stabler')">
+      <img src="https://i.imgur.com/Z6X6Y5A.png">
+      <p>Stabler</p>
+    </div>
+  </div>
 
-  <script>
-    function newCase() {
-      const cases = [
-        "📁 A missing teen was last seen near the subway after midnight.",
-        "📁 A landlord reports strange noises coming from an empty apartment.",
-        "📁 Surveillance caught someone watching the same building every night.",
-        "📁 A witness claims they heard an argument before the lights went out."
-      ];
-      log(cases);
-    }
+  <!-- CHAT -->
+  <div id="chat">Tap a detective, then type below.</div>
 
-    function talkBenson() {
-      const lines = [
-        "👩‍✈️ Benson: Start with the victim. Every detail counts.",
-        "👩‍✈️ Benson: Don’t rush. The truth shows up when you listen.",
-        "👩‍✈️ Benson: Trust your instincts — but verify everything."
-      ];
-      log(lines);
-    }
+  <input id="userInput" placeholder="Type to the detective..." />
+  <button onclick="sendMessage()">Send</button>
 
-    function talkStabler() {
-      const lines = [
-        "👨‍✈️ Stabler: Someone’s lying. I can feel it.",
-        "👨‍✈️ Stabler: We lean in — see who breaks.",
-        "👨‍✈️ Stabler: This case isn’t adding up."
-      ];
-      log(lines);
-    }
+  <!-- COMPUTER -->
+  <div class="computer">
+    <h3>💻 Police Computer</h3>
+    <button onclick="searchDatabase()">Search Database</button>
+    <div id="computerResult"></div>
+  </div>
+</div>
 
-    function groupChat() {
-      const lines = [
-        "👩‍✈️ Benson: We follow the evidence.\n👨‍✈️ Stabler: And apply pressure.",
-        "👨‍✈️ Stabler: Someone knows more than they’re saying.\n👩‍✈️ Benson: Then we keep digging.",
-        "👩‍✈️ Benson: Stay sharp.\n👨‍✈️ Stabler: Always."
-      ];
-      log(lines);
-    }
+<script>
+let activeDetective = "";
 
-    function log(options) {
-      const choice = options[Math.floor(Math.random() * options.length)];
-      document.getElementById("log").innerText = choice;
-    }
-  </script>
+function setDetective(name) {
+  activeDetective = name;
+  document.getElementById("chat").innerText =
+    name === "benson"
+    ? "Benson: I'm here. Talk to me."
+    : "Stabler: Yeah? What do you got?";
+}
+
+function sendMessage() {
+  const text = document.getElementById("userInput").value;
+  if (!text) return;
+
+  let response = "";
+
+  if (activeDetective === "benson") {
+    response = "Benson: I hear you. Tell me more.";
+  } else if (activeDetective === "stabler") {
+    response = "Stabler: That doesn’t sit right with me.";
+  } else {
+    response = "Choose a detective first.";
+  }
+
+  document.getElementById("chat").innerText =
+    "You: " + text + "\n\n" + response;
+
+  document.getElementById("userInput").value = "";
+}
+
+function searchDatabase() {
+  const results = [
+    "Search Result: Address linked to prior assault case.",
+    "Search Result: Phone number tied to two witnesses.",
+    "Search Result: Victim name appears in an old file."
+  ];
+
+  document.getElementById("computerResult").innerText =
+    results[Math.floor(Math.random() * results.length)];
+}
+</script>
+
 </body>
 </html>
